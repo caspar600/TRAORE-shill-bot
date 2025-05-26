@@ -1,18 +1,22 @@
 import os
-from telethon.sync import TelegramClient
+from telethon import TelegramClient, events
 from dotenv import load_dotenv
 
 load_dotenv()
 
-API_ID = int(os.getenv("API_ID"))
-API_HASH = os.getenv("API_HASH")
-PHONE = os.getenv("PHONE_NUMBER")
+api_id = int(os.getenv("API_ID"))
+api_hash = os.getenv("API_HASH")
+bot_token = os.getenv("BOT_TOKEN")
 
-client = TelegramClient('session_name', API_ID, API_HASH)
+client = TelegramClient('bot', api_id, api_hash).start(bot_token=bot_token)
+
+@client.on(events.NewMessage(pattern='/start'))
+async def start_handler(event):
+    await event.respond("TRAORE Shill Bot is now online and running!")
 
 async def main():
-    await client.send_message('me', '🚀 TRAORE shill bot is live!')
+    print("Bot is up and running...")
+    await client.run_until_disconnected()
 
 with client:
     client.loop.run_until_complete(main())
-
