@@ -1,0 +1,39 @@
+import os
+from telethon.sync import TelegramClient
+import random
+import asyncio
+
+api_id = int(os.getenv('API_ID'))
+api_hash = os.getenv('API_HASH')
+phone_number = os.getenv('PHONE')
+
+client = TelegramClient('session', api_id, api_hash)
+
+groups = [
+    'https://t.me/CryptoTalkz',
+    'https://t.me/ShillYourCrypto',
+    'https://t.me/CryptoShillersHub',
+]
+
+messages = [
+    "🚨 $TRAORE is here to flip the meme world!\n🌍 BNB Chain | Live Airdrop | Hype Token\n📲 Join: @TRAOREportal | 🌐 https://your-website.github.io",
+    "💥 TRAORE ($TRAORE) is the people’s coin!\n🪂 Claim your airdrop now & join the wave\n🔗 https://your-website.github.io",
+    "🔥 TRAORE just dropped — the next 100x meme!\n✅ BSC | Airdrop | No rug zone\n🚀 Join @TRAOREportal | TRAORE to the moon!",
+]
+
+async def main():
+    await client.start(phone=phone_number)
+    while True:
+        for group in groups:
+            try:
+                entity = await client.get_entity(group)
+                message = random.choice(messages)
+                await client.send_message(entity, message)
+                print(f"✅ Posted to {group}")
+                await asyncio.sleep(10)
+            except Exception as e:
+                print(f"❌ Error posting to {group}: {e}")
+        await asyncio.sleep(3600)  # Wait 1 hour before next round
+
+with client:
+    client.loop.run_until_complete(main())
